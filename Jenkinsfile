@@ -24,7 +24,9 @@ node {
        }
 
        stage('Docker build') {
-
+              sh "docker container stop sali-api"
+              sh "docker container rm sali-api"
+              sh "docker image prune -a -f"
               def app = docker.build "zombief0/sali-api:${commit_id}"
        }
        stage('Run docker container') {
