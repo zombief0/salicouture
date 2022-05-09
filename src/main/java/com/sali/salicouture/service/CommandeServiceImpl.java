@@ -57,17 +57,26 @@ public class CommandeServiceImpl implements CommandeService {
 
     @Override
     public List<Commande> listerAll() {
-        return commandeRepository.findAll(Sort.by(Sort.Direction.DESC, "dateCreation", "dateModification"));
+        List<Commande> commandeList = commandeRepository.findAll(Sort.by(Sort.Direction.DESC, "dateCreation", "dateModification"));
+        commandeList.forEach(commande -> commande.setMesures(null));
+        return commandeList;
     }
 
     @Override
     public List<Commande> listerByClient(Long idClient) {
-        return commandeRepository.findAllByClient_IdOrderByDateCreationDesc(idClient);
+        List<Commande> commandeList = commandeRepository.findAllByClient_IdOrderByDateCreationDesc(idClient);
+        commandeList.forEach(commande -> commande.setClient(null));
+        return commandeList;
     }
 
     @Override
     public Commande saveCommandeExcel(Commande commande, Client client) {
         commande.setClient(client);
         return commandeRepository.save(commande);
+    }
+
+    @Override
+    public Commande getById(Long idCommande) {
+        return commandeRepository.findById(idCommande).orElse(null);
     }
 }

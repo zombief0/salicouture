@@ -20,12 +20,16 @@ public class CommandeRestController {
     private final CommandeService commandeService;
     private final ControllerTools controllerTools;
 
+    @GetMapping("/{id}")
+    public Commande getById(@PathVariable Long id) {
+        return commandeService.getById(id);
+    }
     @GetMapping
     public List<Commande> lister() {
         return commandeService.listerAll();
     }
 
-    @GetMapping("/{idClient}")
+    @GetMapping("/by-client/{idClient}")
     public List<Commande> listerByClient(@PathVariable Long idClient) {
         return commandeService.listerByClient(idClient);
     }

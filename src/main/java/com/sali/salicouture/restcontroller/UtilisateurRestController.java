@@ -33,7 +33,6 @@ public class UtilisateurRestController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
         Date expiredDate = new Date(System.currentTimeMillis() + SecurityProperties.EXPIRES_IN);
-
         String token = JWT.create()
                 .withSubject(utilisateur.getId() + "")
                 .withClaim("role", "ROLE_" + utilisateur.getRoleUtilisateur().toString())

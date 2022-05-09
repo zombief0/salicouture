@@ -13,4 +13,6 @@ public interface CommandeService {
     List<Commande> listerAll();
     List<Commande> listerByClient(Long idClient);
     Commande saveCommandeExcel(Commande commande, Client client);
+
+    Commande getById(Long idCommande);
 }
