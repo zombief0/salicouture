@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -50,7 +51,12 @@ public class ClientServiceImpl implements ClientService {
             return Message.CLIENT_NOT_EXIST;
         }
 
+
         Client client = optionalClient.get();
+        Client clientBD = clientRepository.findByNomsIgnoreCaseAndPrenomsIgnoreCase(saveClientDto.getNoms(), saveClientDto.getPrenoms());
+        if (clientBD != null && !Objects.equals(clientBD.getId(), client.getId())) {
+            return Message.CLIENT_ALREADY_EXIST;
+        }
         client.setEmail(client.getEmail());
         client.setPrenoms(client.getPrenoms());
         client.setTelephone(client.getTelephone());
