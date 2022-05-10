@@ -3,6 +3,7 @@ package com.sali.salicouture.restcontroller;
 import com.sali.salicouture.entities.Commande;
 import com.sali.salicouture.service.CommandeService;
 import com.sali.salicouture.service.dto.MessageResponse;
+import com.sali.salicouture.service.dto.commande.CommandesClientDto;
 import com.sali.salicouture.service.dto.commande.SaveCommandeDto;
 import com.sali.salicouture.service.dto.enums.Message;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CommandeRestController {
     }
 
     @GetMapping("/by-client/{idClient}")
-    public List<Commande> listerByClient(@PathVariable Long idClient) {
+    public CommandesClientDto listerByClient(@PathVariable Long idClient) {
         return commandeService.listerByClient(idClient);
     }
 

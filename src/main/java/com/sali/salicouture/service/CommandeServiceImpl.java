@@ -4,6 +4,7 @@ import com.sali.salicouture.entities.Client;
 import com.sali.salicouture.entities.Commande;
 import com.sali.salicouture.repositories.ClientRepository;
 import com.sali.salicouture.repositories.CommandeRepository;
+import com.sali.salicouture.service.dto.commande.CommandesClientDto;
 import com.sali.salicouture.service.dto.commande.SaveCommandeDto;
 import com.sali.salicouture.service.dto.enums.Message;
 import lombok.RequiredArgsConstructor;
@@ -63,10 +64,17 @@ public class CommandeServiceImpl implements CommandeService {
     }
 
     @Override
-    public List<Commande> listerByClient(Long idClient) {
+    public CommandesClientDto listerByClient(Long idClient) {
         List<Commande> commandeList = commandeRepository.findAllByClient_IdOrderByDateCreationDesc(idClient);
+        CommandesClientDto commandesClientDto = new CommandesClientDto();
+        if (commandeList.isEmpty()){
+            return null;
+        }
+        Client client = commandeList.get(0).getClient();
         commandeList.forEach(commande -> commande.setClient(null));
-        return commandeList;
+        commandesClientDto.setCommandes(commandeList);
+        commandesClientDto.setClient(client);
+        return commandesClientDto;
     }
 
     @Override
