@@ -66,14 +66,19 @@ public class CommandeServiceImpl implements CommandeService {
     @Override
     public CommandesClientDto listerByClient(Long idClient) {
         List<Commande> commandeList = commandeRepository.findAllByClient_IdOrderByDateCreationDesc(idClient);
-        CommandesClientDto commandesClientDto = new CommandesClientDto();
-        if (commandeList.isEmpty()){
+        Optional<Client> optionalClient = clientRepository.findById(idClient);
+        if (optionalClient.isEmpty()) {
             return null;
         }
-        Client client = commandeList.get(0).getClient();
+        CommandesClientDto commandesClientDto = new CommandesClientDto();
+        Client client = optionalClient.get();
+        commandesClientDto.setClient(client);
+        if (commandeList.isEmpty()){
+            return commandesClientDto;
+        }
+
         commandeList.forEach(commande -> commande.setClient(null));
         commandesClientDto.setCommandes(commandeList);
-        commandesClientDto.setClient(client);
         return commandesClientDto;
     }
 
