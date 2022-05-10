@@ -26,8 +26,14 @@ public class ClientServiceImpl implements ClientService {
         Client client = new Client();
         client.setAnniversaire(saveClientDto.getAnniversaire());
         client.setEmail(saveClientDto.getEmail());
-        client.setNoms(saveClientDto.getNoms().toUpperCase(Locale.ROOT));
-        client.setPrenoms(saveClientDto.getPrenoms().toUpperCase(Locale.ROOT));
+        if (saveClientDto.getNoms() != null) {
+            client.setNoms(saveClientDto.getNoms().toUpperCase(Locale.ROOT));
+        }
+
+        if(saveClientDto.getPrenoms() != null) {
+            client.setPrenoms(saveClientDto.getPrenoms().toUpperCase(Locale.ROOT));
+        }
+
         client.setTelephone(saveClientDto.getTelephone());
         client.setEmail(saveClientDto.getEmail());
         clientRepository.save(client);
@@ -58,10 +64,17 @@ public class ClientServiceImpl implements ClientService {
             return Message.CLIENT_ALREADY_EXIST;
         }
         client.setEmail(saveClientDto.getEmail());
-        client.setPrenoms(saveClientDto.getPrenoms());
+        if (saveClientDto.getPrenoms() != null) {
+            client.setPrenoms(saveClientDto.getPrenoms().toUpperCase(Locale.ROOT));
+        }
+
         client.setTelephone(saveClientDto.getTelephone());
         client.setAnniversaire(saveClientDto.getAnniversaire());
-        client.setNoms(saveClientDto.getNoms());
+
+        if (saveClientDto.getNoms() != null) {
+            client.setNoms(saveClientDto.getNoms().toUpperCase(Locale.ROOT));
+        }
+
         clientRepository.save(client);
         return Message.SUCCES;
     }
