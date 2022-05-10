@@ -57,11 +57,11 @@ public class ClientServiceImpl implements ClientService {
         if (clientBD != null && !Objects.equals(clientBD.getId(), client.getId())) {
             return Message.CLIENT_ALREADY_EXIST;
         }
-        client.setEmail(client.getEmail());
-        client.setPrenoms(client.getPrenoms());
-        client.setTelephone(client.getTelephone());
-        client.setAnniversaire(client.getAnniversaire());
-        client.setNoms(client.getNoms());
+        client.setEmail(saveClientDto.getEmail());
+        client.setPrenoms(saveClientDto.getPrenoms());
+        client.setTelephone(saveClientDto.getTelephone());
+        client.setAnniversaire(saveClientDto.getAnniversaire());
+        client.setNoms(saveClientDto.getNoms());
         clientRepository.save(client);
         return Message.SUCCES;
     }
