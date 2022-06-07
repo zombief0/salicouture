@@ -1,13 +1,10 @@
 package com.sali.salicouture.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sali.salicouture.entities.enums.Echeance;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +20,8 @@ public class Commande extends BaseEntity{
     private Long reste;
     @Column(columnDefinition = "TEXT")
     private String notes;
+    @Enumerated(EnumType.STRING)
+    private Echeance echeance;
 
     @ManyToOne(optional = false)
     private Client client;

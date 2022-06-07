@@ -25,4 +25,8 @@ public class Mesure extends BaseEntity{
     @JsonIgnore
     @ManyToOne(optional = false)
     private Commande commande;
+
+    @JsonIgnore
+    @ManyToOne
+    private Client client;
 }

@@ -1,7 +1,9 @@
 package com.sali.salicouture.service;
 
+import com.sali.salicouture.entities.Client;
 import com.sali.salicouture.entities.Commande;
 import com.sali.salicouture.entities.Mesure;
+import com.sali.salicouture.repositories.ClientRepository;
 import com.sali.salicouture.repositories.CommandeRepository;
 import com.sali.salicouture.repositories.MesureRepository;
 import com.sali.salicouture.service.dto.enums.Message;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class MesureServiceImpl implements MesureService {
     private final MesureRepository mesureRepository;
     private final CommandeRepository commandeRepository;
+    private final ClientRepository clientRepository;
 
     @Override
     public Message ajouter(SaveMesureDto saveMesureDto, Long idCommande) {
@@ -59,7 +62,12 @@ public class MesureServiceImpl implements MesureService {
     }
 
     @Override
-    public void saveMesures(List<Mesure> mesures) {
+    public void saveMesures(List<Mesure> mesures, Client client) {
+        if (!client.getExistMesureStandard()) {
+            mesures.forEach(mesure -> mesure.setClient(client));
+        }
+        client.setExistMesureStandard(true);
+        clientRepository.save(client);
         mesureRepository.saveAll(mesures);
     }
 }

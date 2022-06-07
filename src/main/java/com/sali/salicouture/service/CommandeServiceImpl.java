@@ -58,14 +58,14 @@ public class CommandeServiceImpl implements CommandeService {
 
     @Override
     public List<Commande> listerAll() {
-        List<Commande> commandeList = commandeRepository.findAll(Sort.by(Sort.Direction.DESC, "dateCreation", "dateModification"));
+        List<Commande> commandeList = commandeRepository.findAll(Sort.by(Sort.Direction.DESC, "dateRetrait"));
         commandeList.forEach(commande -> commande.setMesures(null));
         return commandeList;
     }
 
     @Override
     public CommandesClientDto listerByClient(Long idClient) {
-        List<Commande> commandeList = commandeRepository.findAllByClient_IdOrderByDateCreationDesc(idClient);
+        List<Commande> commandeList = commandeRepository.findAllByClient_IdOrderByDateRetraitDesc(idClient);
         Optional<Client> optionalClient = clientRepository.findById(idClient);
         if (optionalClient.isEmpty()) {
             return null;

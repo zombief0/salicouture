@@ -3,6 +3,8 @@ package com.sali.salicouture.service;
 import com.sali.salicouture.entities.Client;
 import com.sali.salicouture.entities.Commande;
 import com.sali.salicouture.entities.Mesure;
+import com.sali.salicouture.entities.enums.Echeance;
+import com.sali.salicouture.entities.enums.Sexe;
 import com.sali.salicouture.entities.enums.TypeMesure;
 import com.sali.salicouture.entities.enums.TypeVetement;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class ExcelServiceImpl implements ExcelService {
     private final CommandeService commandeService;
     private final MesureService mesureService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     @Override
     public void lireFichierExcel(MultipartFile file) throws IOException {
         Path repTemp = Files.createTempDirectory("salicouture_");// créer un repertoire temporaire  préfixé par scoma
@@ -58,44 +61,46 @@ public class ExcelServiceImpl implements ExcelService {
                             mesureEVeste, mesureLMVeste, mesurePVeste, mesureVVeste,
                             mesureTMVeste, mesureABVeste, mesureCAVeste, mesureCDVeste, mesureLVeste,
                             mesureTPantalon, mesureBPantalon, mesureCPantalon, mesureLPantalon, mesurePPantalon,
-                            mesure2BPantalon, mesuremPantalon;
+                            mesure2BPantalon, mesuremPantalon, echeance, sexe;
 
                     noms = dataFormatter.formatCellValue(row.getCell(0)).trim();
                     prenoms = dataFormatter.formatCellValue(row.getCell(1)).trim();
-                    telephone = dataFormatter.formatCellValue(row.getCell(2)).trim();
-                    email = dataFormatter.formatCellValue(row.getCell(3)).trim();
-                    anniversaire = dataFormatter.formatCellValue(row.getCell(4)).trim();
-                    dateCommande = dataFormatter.formatCellValue(row.getCell(5)).trim();
-                    dateRetrait = dataFormatter.formatCellValue(row.getCell(6)).trim();
-                    coutTotal = dataFormatter.formatCellValue(row.getCell(7)).trim();
-                    avance = dataFormatter.formatCellValue(row.getCell(8)).trim();
-                    reste = dataFormatter.formatCellValue(row.getCell(9)).trim();
-                    notesDescription = dataFormatter.formatCellValue(row.getCell(10)).trim();
-                    mesureEChemise = dataFormatter.formatCellValue(row.getCell(11)).trim();
-                    mesureLMChemise = dataFormatter.formatCellValue(row.getCell(12)).trim();
-                    mesurePChemise = dataFormatter.formatCellValue(row.getCell(13)).trim();
-                    mesureVChemise = dataFormatter.formatCellValue(row.getCell(14)).trim();
-                    mesureTMChemise = dataFormatter.formatCellValue(row.getCell(15)).trim();
-                    mesureABChemise = dataFormatter.formatCellValue(row.getCell(16)).trim();
-                    mesure2PChemise = dataFormatter.formatCellValue(row.getCell(17)).trim();
-                    mesureColChemise = dataFormatter.formatCellValue(row.getCell(18)).trim();
-                    mesureLChemise = dataFormatter.formatCellValue(row.getCell(19)).trim();
-                    mesureEVeste = dataFormatter.formatCellValue(row.getCell(20)).trim();
-                    mesureLMVeste = dataFormatter.formatCellValue(row.getCell(21)).trim();
-                    mesurePVeste = dataFormatter.formatCellValue(row.getCell(22)).trim();
-                    mesureVVeste = dataFormatter.formatCellValue(row.getCell(23)).trim();
-                    mesureTMVeste = dataFormatter.formatCellValue(row.getCell(24)).trim();
-                    mesureABVeste = dataFormatter.formatCellValue(row.getCell(25)).trim();
-                    mesureCAVeste = dataFormatter.formatCellValue(row.getCell(26)).trim();
-                    mesureCDVeste = dataFormatter.formatCellValue(row.getCell(27)).trim();
-                    mesureLVeste = dataFormatter.formatCellValue(row.getCell(28)).trim();
-                    mesureTPantalon = dataFormatter.formatCellValue(row.getCell(29)).trim();
-                    mesureBPantalon = dataFormatter.formatCellValue(row.getCell(30)).trim();
-                    mesureCPantalon = dataFormatter.formatCellValue(row.getCell(31)).trim();
-                    mesureLPantalon = dataFormatter.formatCellValue(row.getCell(32)).trim();
-                    mesurePPantalon = dataFormatter.formatCellValue(row.getCell(33)).trim();
-                    mesure2BPantalon = dataFormatter.formatCellValue(row.getCell(34)).trim();
-                    mesuremPantalon = dataFormatter.formatCellValue(row.getCell(35)).trim();
+                    sexe = dataFormatter.formatCellValue(row.getCell(2)).trim();
+                    telephone = dataFormatter.formatCellValue(row.getCell(3)).trim();
+                    email = dataFormatter.formatCellValue(row.getCell(4)).trim();
+                    anniversaire = dataFormatter.formatCellValue(row.getCell(5)).trim();
+                    dateCommande = dataFormatter.formatCellValue(row.getCell(6)).trim();
+                    echeance = dataFormatter.formatCellValue(row.getCell(7)).trim();
+                    dateRetrait = dataFormatter.formatCellValue(row.getCell(8)).trim();
+                    coutTotal = dataFormatter.formatCellValue(row.getCell(9)).trim();
+                    avance = dataFormatter.formatCellValue(row.getCell(10)).trim();
+                    reste = dataFormatter.formatCellValue(row.getCell(11)).trim();
+                    notesDescription = dataFormatter.formatCellValue(row.getCell(12)).trim();
+                    mesureEChemise = dataFormatter.formatCellValue(row.getCell(13)).trim();
+                    mesureLMChemise = dataFormatter.formatCellValue(row.getCell(14)).trim();
+                    mesurePChemise = dataFormatter.formatCellValue(row.getCell(15)).trim();
+                    mesureVChemise = dataFormatter.formatCellValue(row.getCell(16)).trim();
+                    mesureTMChemise = dataFormatter.formatCellValue(row.getCell(17)).trim();
+                    mesureABChemise = dataFormatter.formatCellValue(row.getCell(18)).trim();
+                    mesure2PChemise = dataFormatter.formatCellValue(row.getCell(19)).trim();
+                    mesureColChemise = dataFormatter.formatCellValue(row.getCell(20)).trim();
+                    mesureLChemise = dataFormatter.formatCellValue(row.getCell(21)).trim();
+                    mesureEVeste = dataFormatter.formatCellValue(row.getCell(22)).trim();
+                    mesureLMVeste = dataFormatter.formatCellValue(row.getCell(23)).trim();
+                    mesurePVeste = dataFormatter.formatCellValue(row.getCell(24)).trim();
+                    mesureVVeste = dataFormatter.formatCellValue(row.getCell(25)).trim();
+                    mesureTMVeste = dataFormatter.formatCellValue(row.getCell(26)).trim();
+                    mesureABVeste = dataFormatter.formatCellValue(row.getCell(27)).trim();
+                    mesureCAVeste = dataFormatter.formatCellValue(row.getCell(28)).trim();
+                    mesureCDVeste = dataFormatter.formatCellValue(row.getCell(29)).trim();
+                    mesureLVeste = dataFormatter.formatCellValue(row.getCell(30)).trim();
+                    mesureTPantalon = dataFormatter.formatCellValue(row.getCell(31)).trim();
+                    mesureBPantalon = dataFormatter.formatCellValue(row.getCell(32)).trim();
+                    mesureCPantalon = dataFormatter.formatCellValue(row.getCell(33)).trim();
+                    mesureLPantalon = dataFormatter.formatCellValue(row.getCell(34)).trim();
+                    mesurePPantalon = dataFormatter.formatCellValue(row.getCell(35)).trim();
+                    mesure2BPantalon = dataFormatter.formatCellValue(row.getCell(36)).trim();
+                    mesuremPantalon = dataFormatter.formatCellValue(row.getCell(37)).trim();
 
                     // Client
                     if (!noms.trim().isEmpty()) {
@@ -105,6 +110,15 @@ public class ExcelServiceImpl implements ExcelService {
                         client.setAnniversaire(anniversaire.trim());
                         client.setEmail(email.trim());
                         client.setTelephone(telephone.trim());
+                        client.setExistMesureStandard(false);
+                        sexe = sexe.trim();
+                        if (!sexe.equals("")) {
+                            if (sexe.toUpperCase(Locale.ROOT).equals("M")) {
+                                client.setSexe(Sexe.MASCULIN);
+                            } else {
+                                client.setSexe(Sexe.FEMININ);
+                            }
+                        }
                         client = clientService.saveClientExcel(client);
                     }
 
@@ -113,6 +127,26 @@ public class ExcelServiceImpl implements ExcelService {
                     if (!dateCommande.trim().isEmpty()) {
                         commande.setDateCommande(extractDate(dateCommande));
 
+                    }
+
+                    echeance = echeance.trim();
+                    if (echeance.trim().isEmpty()) {
+                        commande.setEcheance(Echeance.HNONE);
+                    } else {
+                        switch (echeance.toLowerCase(Locale.ROOT)) {
+                            case "24h":
+                                commande.setEcheance(Echeance.H24);
+                                break;
+                            case "48h":
+                                commande.setEcheance(Echeance.H48);
+                                break;
+                            case "72h":
+                                commande.setEcheance(Echeance.H72);
+                                break;
+                            default:
+                                commande.setEcheance(Echeance.HNONE);
+                                break;
+                        }
                     }
 
                     if (!dateRetrait.trim().isEmpty()) {
@@ -165,7 +199,7 @@ public class ExcelServiceImpl implements ExcelService {
                     addMesure(mesurePPantalon, TypeMesure.P, TypeVetement.PANTALON, commande, listeMesures);
                     addMesure(mesure2BPantalon, TypeMesure.B, TypeVetement.PANTALON, commande, listeMesures);
                     addMesure(mesuremPantalon, TypeMesure.m, TypeVetement.PANTALON, commande, listeMesures);
-                    mesureService.saveMesures(listeMesures);
+                    mesureService.saveMesures(listeMesures, client);
                 }
             }
         }
@@ -181,7 +215,7 @@ public class ExcelServiceImpl implements ExcelService {
             mesure.setTypeMesure(typeMesure);
             mesure.setTypeVetement(typeVetement);
             mesure.setCommande(commande);
-            mesure.setValeur(Double.parseDouble(mesureValueString.replace(",",".")));
+            mesure.setValeur(Double.parseDouble(mesureValueString.replace(",", ".")));
             mesures.add(mesure);
         }
     }
