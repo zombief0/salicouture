@@ -26,6 +26,7 @@ public class ClientServiceImpl implements ClientService {
         Client client = new Client();
         client.setAnniversaire(saveClientDto.getAnniversaire());
         client.setEmail(saveClientDto.getEmail());
+        client.setSexe(saveClientDto.getSexe());
         if (saveClientDto.getNoms() != null) {
             client.setNoms(saveClientDto.getNoms().toUpperCase(Locale.ROOT));
         }
