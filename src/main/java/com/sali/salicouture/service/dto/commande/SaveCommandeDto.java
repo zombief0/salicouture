@@ -1,8 +1,10 @@
 package com.sali.salicouture.service.dto.commande;
 
+import com.sali.salicouture.entities.enums.Echeance;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Getter
@@ -14,4 +16,7 @@ public class SaveCommandeDto {
     private Long avance;
     private Long reste;
     private String notes;
+    private boolean useMesuresStandard;
+    @NotNull
+    private Echeance echeance;
 }

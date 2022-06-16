@@ -2,8 +2,10 @@ package com.sali.salicouture.service;
 
 import com.sali.salicouture.entities.Client;
 import com.sali.salicouture.entities.Commande;
+import com.sali.salicouture.entities.Mesure;
 import com.sali.salicouture.repositories.ClientRepository;
 import com.sali.salicouture.repositories.CommandeRepository;
+import com.sali.salicouture.repositories.MesureRepository;
 import com.sali.salicouture.service.dto.commande.CommandesClientDto;
 import com.sali.salicouture.service.dto.commande.SaveCommandeDto;
 import com.sali.salicouture.service.dto.enums.Message;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +23,8 @@ public class CommandeServiceImpl implements CommandeService {
     private final CommandeRepository commandeRepository;
     private final ClientRepository clientRepository;
 
+    private final MesureRepository mesureRepository;
+
     @Override
     public Message createCommande(SaveCommandeDto saveCommandeDto, Long idClient) {
         Optional<Client> optionalClient = clientRepository.findById(idClient);
@@ -27,19 +32,34 @@ public class CommandeServiceImpl implements CommandeService {
             return Message.CLIENT_NOT_EXIST;
         }
 
+        Client client = optionalClient.get();
         Commande commande = new Commande();
-        commande.setClient(optionalClient.get());
+        commande.setClient(client);
         commande.setDateCommande(saveCommandeDto.getDateCommande());
         commande.setDateRetrait(saveCommandeDto.getDateRetrait());
         commande.setAvance(saveCommandeDto.getAvance());
         commande.setCoutTotal(saveCommandeDto.getCoutTotal());
         commande.setReste(saveCommandeDto.getReste());
         commande.setNotes(saveCommandeDto.getNotes());
+        commande.setEcheance(saveCommandeDto.getEcheance());
         commandeRepository.save(commande);
+        if (saveCommandeDto.isUseMesuresStandard()) {
+            List<Mesure> mesureList = mesureRepository.findAllByClient(client);
+            if (mesureList.isEmpty()) {
+                return Message.MESURE_STANDARD_NOT_EXIST;
+            }
+
+            mesureList.forEach(mesure -> {
+                Mesure newMesure = mesure.copy();
+                newMesure.setCommande(commande);
+                mesureRepository.save(newMesure);
+            });
+        }
         return Message.SUCCES;
     }
 
     @Override
+    @Transactional
     public Message update(SaveCommandeDto saveCommande, Long idCommande) {
         Optional<Commande> optionalCommande = commandeRepository.findById(idCommande);
         if (optionalCommande.isEmpty()) {
@@ -52,7 +72,22 @@ public class CommandeServiceImpl implements CommandeService {
         commande.setDateRetrait(saveCommande.getDateRetrait());
         commande.setNotes(saveCommande.getNotes());
         commande.setCoutTotal(saveCommande.getCoutTotal());
+        commande.setEcheance(saveCommande.getEcheance());
         commandeRepository.save(commande);
+        if (saveCommande.isUseMesuresStandard()) {
+            List<Mesure> mesureList = mesureRepository.findAllByClient(commande.getClient());
+            if (mesureList.isEmpty()) {
+                return Message.MESURE_STANDARD_NOT_EXIST;
+            }
+
+            mesureList.forEach(mesure -> {
+                Mesure newMesure = mesure.copy();
+                newMesure.setCommande(commande);
+                mesureRepository.save(newMesure);
+            });
+        } else {
+            mesureRepository.deleteAllByCommande(commande);
+        }
         return Message.SUCCES;
     }
 

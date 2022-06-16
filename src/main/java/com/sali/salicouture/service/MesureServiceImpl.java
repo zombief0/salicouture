@@ -65,9 +65,9 @@ public class MesureServiceImpl implements MesureService {
     public void saveMesures(List<Mesure> mesures, Client client) {
         if (!client.getExistMesureStandard()) {
             mesures.forEach(mesure -> mesure.setClient(client));
+            client.setExistMesureStandard(true);
+            clientRepository.save(client);
         }
-        client.setExistMesureStandard(true);
-        clientRepository.save(client);
         mesureRepository.saveAll(mesures);
     }
 }

@@ -29,4 +29,12 @@ public class Mesure extends BaseEntity{
     @JsonIgnore
     @ManyToOne
     private Client client;
+
+    public Mesure copy(){
+        Mesure mesure = new Mesure();
+        mesure.setTypeMesure(this.typeMesure);
+        mesure.setValeur(this.valeur);
+        mesure.setTypeVetement(this.typeVetement);
+        return mesure;
+    }
 }
