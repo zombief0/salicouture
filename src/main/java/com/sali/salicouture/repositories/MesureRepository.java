@@ -11,4 +11,6 @@ public interface MesureRepository extends JpaRepository<Mesure, Long> {
     List<Mesure> findAllByClient(Client client);
 
     void deleteAllByCommande(Commande commande);
+
+    boolean existsByClient(Client client);
 }

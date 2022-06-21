@@ -33,6 +33,11 @@ public class CommandeServiceImpl implements CommandeService {
         }
 
         Client client = optionalClient.get();
+        if (saveCommandeDto.isUseMesuresStandard() && !mesureRepository.existsByClient(client)) {
+
+            return Message.MESURE_STANDARD_NOT_EXIST;
+
+        }
         Commande commande = new Commande();
         commande.setClient(client);
         commande.setDateCommande(saveCommandeDto.getDateCommande());
@@ -43,18 +48,14 @@ public class CommandeServiceImpl implements CommandeService {
         commande.setNotes(saveCommandeDto.getNotes());
         commande.setEcheance(saveCommandeDto.getEcheance());
         commandeRepository.save(commande);
-        if (saveCommandeDto.isUseMesuresStandard()) {
-            List<Mesure> mesureList = mesureRepository.findAllByClient(client);
-            if (mesureList.isEmpty()) {
-                return Message.MESURE_STANDARD_NOT_EXIST;
-            }
 
-            mesureList.forEach(mesure -> {
-                Mesure newMesure = mesure.copy();
-                newMesure.setCommande(commande);
-                mesureRepository.save(newMesure);
-            });
-        }
+        List<Mesure> mesureList = mesureRepository.findAllByClient(client);
+
+        mesureList.forEach(mesure -> {
+            Mesure newMesure = mesure.copy();
+            newMesure.setCommande(commande);
+            mesureRepository.save(newMesure);
+        });
         return Message.SUCCES;
     }
 
@@ -66,14 +67,7 @@ public class CommandeServiceImpl implements CommandeService {
             return Message.COMMANDE_NOT_EXIST;
         }
         Commande commande = optionalCommande.get();
-        commande.setDateCommande(saveCommande.getDateCommande());
-        commande.setAvance(saveCommande.getAvance());
-        commande.setReste(saveCommande.getReste());
-        commande.setDateRetrait(saveCommande.getDateRetrait());
-        commande.setNotes(saveCommande.getNotes());
-        commande.setCoutTotal(saveCommande.getCoutTotal());
-        commande.setEcheance(saveCommande.getEcheance());
-        commandeRepository.save(commande);
+
         if (saveCommande.isUseMesuresStandard()) {
             List<Mesure> mesureList = mesureRepository.findAllByClient(commande.getClient());
             if (mesureList.isEmpty()) {
@@ -88,6 +82,15 @@ public class CommandeServiceImpl implements CommandeService {
         } else {
             mesureRepository.deleteAllByCommande(commande);
         }
+
+        commande.setDateCommande(saveCommande.getDateCommande());
+        commande.setAvance(saveCommande.getAvance());
+        commande.setReste(saveCommande.getReste());
+        commande.setDateRetrait(saveCommande.getDateRetrait());
+        commande.setNotes(saveCommande.getNotes());
+        commande.setCoutTotal(saveCommande.getCoutTotal());
+        commande.setEcheance(saveCommande.getEcheance());
+        commandeRepository.save(commande);
         return Message.SUCCES;
     }
 
@@ -108,7 +111,7 @@ public class CommandeServiceImpl implements CommandeService {
         CommandesClientDto commandesClientDto = new CommandesClientDto();
         Client client = optionalClient.get();
         commandesClientDto.setClient(client);
-        if (commandeList.isEmpty()){
+        if (commandeList.isEmpty()) {
             return commandesClientDto;
         }
 
