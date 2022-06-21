@@ -96,7 +96,7 @@ public class CommandeServiceImpl implements CommandeService {
 
     @Override
     public List<Commande> listerAll() {
-        List<Commande> commandeList = commandeRepository.findAll(Sort.by(Sort.Direction.DESC, "dateRetrait"));
+        List<Commande> commandeList = commandeRepository.findAll(Sort.by(Sort.Direction.DESC, "dateCommande"));
         commandeList.forEach(commande -> commande.setMesures(null));
         return commandeList;
     }
