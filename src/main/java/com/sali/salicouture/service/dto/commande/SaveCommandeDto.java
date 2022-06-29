@@ -16,7 +16,7 @@ public class SaveCommandeDto {
     private Long avance;
     private Long reste;
     private String notes;
-    private boolean useMesuresStandard;
+    private boolean useMesureStandard;
     @NotNull
     private Echeance echeance;
 }

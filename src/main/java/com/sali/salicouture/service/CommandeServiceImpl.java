@@ -33,7 +33,7 @@ public class CommandeServiceImpl implements CommandeService {
         }
 
         Client client = optionalClient.get();
-        if (saveCommandeDto.isUseMesuresStandard() && !mesureRepository.existsByClient(client)) {
+        if (saveCommandeDto.isUseMesureStandard() && !mesureRepository.existsByClient(client)) {
 
             return Message.MESURE_STANDARD_NOT_EXIST;
 
@@ -49,7 +49,7 @@ public class CommandeServiceImpl implements CommandeService {
         commande.setEcheance(saveCommandeDto.getEcheance());
         commandeRepository.save(commande);
 
-        if (saveCommandeDto.isUseMesuresStandard()) {
+        if (saveCommandeDto.isUseMesureStandard()) {
             commande.setUseMesureStandard(true);
             List<Mesure> mesureList = mesureRepository.findAllByClient(client);
 
@@ -72,8 +72,8 @@ public class CommandeServiceImpl implements CommandeService {
         }
         Commande commande = optionalCommande.get();
 
-        if (saveCommande.isUseMesuresStandard() != commande.isUseMesureStandard()){
-            if (saveCommande.isUseMesuresStandard()) {
+        if (saveCommande.isUseMesureStandard() != commande.isUseMesureStandard()){
+            if (saveCommande.isUseMesureStandard()) {
                 List<Mesure> mesureList = mesureRepository.findAllByClient(commande.getClient());
                 if (mesureList.isEmpty()) {
                     return Message.MESURE_STANDARD_NOT_EXIST;
