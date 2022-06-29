@@ -10,7 +10,7 @@ import java.util.List;
 public interface MesureRepository extends JpaRepository<Mesure, Long> {
     List<Mesure> findAllByClient(Client client);
 
-    void deleteAllByCommande(Commande commande);
+    void deleteAllByCommandeAndClientIsNull(Commande commande);
 
     boolean existsByClient(Client client);
 }

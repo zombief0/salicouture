@@ -87,7 +87,7 @@ public class CommandeServiceImpl implements CommandeService {
                 });
             } else {
                 commande.setUseMesureStandard(false);
-                mesureRepository.deleteAllByCommande(commande);
+                mesureRepository.deleteAllByCommandeAndClientIsNull(commande);
             }
         }
 
