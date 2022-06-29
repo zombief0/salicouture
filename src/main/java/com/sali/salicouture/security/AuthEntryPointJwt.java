@@ -18,7 +18,8 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         log.error(authException.getMessage());
         if (request.getRequestURI().contains("login")) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+        } else {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
-        response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 }
