@@ -49,13 +49,17 @@ public class CommandeServiceImpl implements CommandeService {
         commande.setEcheance(saveCommandeDto.getEcheance());
         commandeRepository.save(commande);
 
-        List<Mesure> mesureList = mesureRepository.findAllByClient(client);
+        if (saveCommandeDto.isUseMesuresStandard()) {
+            commande.setUseMesureStandard(true);
+            List<Mesure> mesureList = mesureRepository.findAllByClient(client);
 
-        mesureList.forEach(mesure -> {
-            Mesure newMesure = mesure.copy();
-            newMesure.setCommande(commande);
-            mesureRepository.save(newMesure);
-        });
+            mesureList.forEach(mesure -> {
+                Mesure newMesure = mesure.copy();
+                newMesure.setCommande(commande);
+                mesureRepository.save(newMesure);
+            });
+            commandeRepository.save(commande);
+        }
         return Message.SUCCES;
     }
 
@@ -68,20 +72,25 @@ public class CommandeServiceImpl implements CommandeService {
         }
         Commande commande = optionalCommande.get();
 
-        if (saveCommande.isUseMesuresStandard()) {
-            List<Mesure> mesureList = mesureRepository.findAllByClient(commande.getClient());
-            if (mesureList.isEmpty()) {
-                return Message.MESURE_STANDARD_NOT_EXIST;
-            }
+        if (saveCommande.isUseMesuresStandard() != commande.isUseMesureStandard()){
+            if (saveCommande.isUseMesuresStandard()) {
+                List<Mesure> mesureList = mesureRepository.findAllByClient(commande.getClient());
+                if (mesureList.isEmpty()) {
+                    return Message.MESURE_STANDARD_NOT_EXIST;
+                }
 
-            mesureList.forEach(mesure -> {
-                Mesure newMesure = mesure.copy();
-                newMesure.setCommande(commande);
-                mesureRepository.save(newMesure);
-            });
-        } else {
-            mesureRepository.deleteAllByCommande(commande);
+                commande.setUseMesureStandard(true);
+                mesureList.forEach(mesure -> {
+                    Mesure newMesure = mesure.copy();
+                    newMesure.setCommande(commande);
+                    mesureRepository.save(newMesure);
+                });
+            } else {
+                commande.setUseMesureStandard(false);
+                mesureRepository.deleteAllByCommande(commande);
+            }
         }
+
 
         commande.setDateCommande(saveCommande.getDateCommande());
         commande.setAvance(saveCommande.getAvance());

@@ -22,6 +22,7 @@ public class Commande extends BaseEntity{
     private String notes;
     @Enumerated(EnumType.STRING)
     private Echeance echeance;
+    private boolean useMesureStandard;
 
     @ManyToOne(optional = false)
     private Client client;
