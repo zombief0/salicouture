@@ -21,7 +21,9 @@ public class Client extends BaseEntity{
     private String telephone;
     private String email;
     private String anniversaire;
-    private Boolean existMesureStandard;
+    private boolean existMesureStandardPantalon;
+    private boolean existMesureStandardChemise;
+    private boolean existMesureStandardVeste;
     @Enumerated(EnumType.STRING)
     private Sexe sexe;
 

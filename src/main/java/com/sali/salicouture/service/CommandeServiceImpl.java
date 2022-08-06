@@ -3,6 +3,7 @@ package com.sali.salicouture.service;
 import com.sali.salicouture.entities.Client;
 import com.sali.salicouture.entities.Commande;
 import com.sali.salicouture.entities.Mesure;
+import com.sali.salicouture.entities.enums.TypeVetement;
 import com.sali.salicouture.repositories.ClientRepository;
 import com.sali.salicouture.repositories.CommandeRepository;
 import com.sali.salicouture.repositories.MesureRepository;
@@ -33,9 +34,21 @@ public class CommandeServiceImpl implements CommandeService {
         }
 
         Client client = optionalClient.get();
-        if (saveCommandeDto.isUseMesureStandard() && !mesureRepository.existsByClient(client)) {
+        if (saveCommandeDto.isUseMesureStandardVeste() && !mesureRepository.existsByClientAndTypeVetement(client, TypeVetement.VESTE)) {
 
-            return Message.MESURE_STANDARD_NOT_EXIST;
+            return Message.MESURE_STANDARD_VESTE_NOT_EXIST;
+
+        }
+
+        if (saveCommandeDto.isUseMesureStandardPantalon() && !mesureRepository.existsByClientAndTypeVetement(client, TypeVetement.PANTALON)) {
+
+            return Message.MESURE_STANDARD_PANTALON_NOT_EXIST;
+
+        }
+
+        if (saveCommandeDto.isUseMesureStandardChemise() && !mesureRepository.existsByClientAndTypeVetement(client, TypeVetement.CHEMISE)) {
+
+            return Message.MESURE_STANDARD_CHEMISE_NOT_EXIST;
 
         }
         Commande commande = new Commande();
@@ -49,19 +62,30 @@ public class CommandeServiceImpl implements CommandeService {
         commande.setEcheance(saveCommandeDto.getEcheance());
         commandeRepository.save(commande);
 
-        if (saveCommandeDto.isUseMesureStandard()) {
-            commande.setUseMesureStandard(true);
-            List<Mesure> mesureList = mesureRepository.findAllByClient(client);
+        if (saveCommandeDto.isUseMesureStandardVeste()) {
+            commande.setUseMesureStandardVeste(true);
+            List<Mesure> mesureList = mesureRepository.findAllByClientAndTypeVetement(client, TypeVetement.VESTE);
 
-            mesureList.forEach(mesure -> {
-                Mesure newMesure = mesure.copy();
-                newMesure.setCommande(commande);
-                mesureRepository.save(newMesure);
-            });
-            commandeRepository.save(commande);
+            enregistrerNouvellesMesures(mesureList, commande);
+        }
+
+        if (saveCommandeDto.isUseMesureStandardPantalon()) {
+            commande.setUseMesureStandardPantalon(true);
+            List<Mesure> mesureList = mesureRepository.findAllByClientAndTypeVetement(client, TypeVetement.PANTALON);
+
+            enregistrerNouvellesMesures(mesureList, commande);
+        }
+
+        if (saveCommandeDto.isUseMesureStandardChemise()) {
+            commande.setUseMesureStandardChemise(true);
+            List<Mesure> mesureList = mesureRepository.findAllByClientAndTypeVetement(client, TypeVetement.CHEMISE);
+
+            enregistrerNouvellesMesures(mesureList, commande);
         }
         return Message.SUCCES;
     }
+
+
 
     @Override
     @Transactional
@@ -72,22 +96,48 @@ public class CommandeServiceImpl implements CommandeService {
         }
         Commande commande = optionalCommande.get();
 
-        if (saveCommande.isUseMesureStandard() != commande.isUseMesureStandard()){
-            if (saveCommande.isUseMesureStandard()) {
-                List<Mesure> mesureList = mesureRepository.findAllByClient(commande.getClient());
+        if (saveCommande.isUseMesureStandardVeste() != commande.isUseMesureStandardVeste()){
+            if (saveCommande.isUseMesureStandardVeste()) {
+                List<Mesure> mesureList = mesureRepository.findAllByClientAndTypeVetement(commande.getClient(), TypeVetement.VESTE);
                 if (mesureList.isEmpty()) {
-                    return Message.MESURE_STANDARD_NOT_EXIST;
+                    return Message.MESURE_STANDARD_VESTE_NOT_EXIST;
                 }
 
-                commande.setUseMesureStandard(true);
-                mesureList.forEach(mesure -> {
-                    Mesure newMesure = mesure.copy();
-                    newMesure.setCommande(commande);
-                    mesureRepository.save(newMesure);
-                });
+                commande.setUseMesureStandardVeste(true);
+                enregistrerNouvellesMesures(mesureList, commande);
             } else {
-                commande.setUseMesureStandard(false);
-                mesureRepository.deleteAllByCommandeAndClientIsNull(commande);
+                commande.setUseMesureStandardVeste(false);
+                mesureRepository.deleteAllByCommandeAndClientIsNullAndTypeVetement(commande, TypeVetement.VESTE);
+            }
+        }
+
+        if (saveCommande.isUseMesureStandardPantalon() != commande.isUseMesureStandardPantalon()){
+            if (saveCommande.isUseMesureStandardPantalon()) {
+                List<Mesure> mesureList = mesureRepository.findAllByClientAndTypeVetement(commande.getClient(), TypeVetement.PANTALON);
+                if (mesureList.isEmpty()) {
+                    return Message.MESURE_STANDARD_PANTALON_NOT_EXIST;
+                }
+
+                commande.setUseMesureStandardPantalon(true);
+                enregistrerNouvellesMesures(mesureList, commande);
+            } else {
+                commande.setUseMesureStandardPantalon(false);
+                mesureRepository.deleteAllByCommandeAndClientIsNullAndTypeVetement(commande, TypeVetement.PANTALON);
+            }
+        }
+
+        if (saveCommande.isUseMesureStandardChemise() != commande.isUseMesureStandardChemise()){
+            if (saveCommande.isUseMesureStandardChemise()) {
+                List<Mesure> mesureList = mesureRepository.findAllByClientAndTypeVetement(commande.getClient(), TypeVetement.CHEMISE);
+                if (mesureList.isEmpty()) {
+                    return Message.MESURE_STANDARD_CHEMISE_NOT_EXIST;
+                }
+
+                commande.setUseMesureStandardChemise(true);
+                enregistrerNouvellesMesures(mesureList, commande);
+            } else {
+                commande.setUseMesureStandardChemise(false);
+                mesureRepository.deleteAllByCommandeAndClientIsNullAndTypeVetement(commande, TypeVetement.CHEMISE);
             }
         }
 
@@ -138,5 +188,14 @@ public class CommandeServiceImpl implements CommandeService {
     @Override
     public Commande getById(Long idCommande) {
         return commandeRepository.findById(idCommande).orElse(null);
+    }
+
+    private void enregistrerNouvellesMesures(List<Mesure> mesureList, Commande commande){
+        mesureList.forEach(mesure -> {
+            Mesure newMesure = mesure.copy();
+            newMesure.setCommande(commande);
+            mesureRepository.save(newMesure);
+        });
+        commandeRepository.save(commande);
     }
 }

@@ -20,9 +20,20 @@ public class ExcelRestController {
     private final ExcelService excelService;
 
     @PostMapping
-    public ResponseEntity<?> loadExcelDate(@RequestPart MultipartFile file) {
+    public ResponseEntity<?> loadExcelDataOld(@RequestPart MultipartFile file) {
         try {
-            excelService.lireFichierExcel(file);
+            excelService.lireFichierExcel(file, true);
+            return ResponseEntity.ok(new MessageResponse("UPLOAD_SUCCES"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<?> loadExcelDateNew(@RequestPart MultipartFile file) {
+        try {
+            excelService.lireFichierExcel(file, false);
             return ResponseEntity.ok(new MessageResponse("UPLOAD_SUCCES"));
         } catch (IOException e) {
             e.printStackTrace();

@@ -3,6 +3,7 @@ package com.sali.salicouture.service;
 import com.sali.salicouture.entities.Client;
 import com.sali.salicouture.entities.Commande;
 import com.sali.salicouture.entities.Mesure;
+import com.sali.salicouture.entities.enums.TypeVetement;
 import com.sali.salicouture.repositories.ClientRepository;
 import com.sali.salicouture.repositories.CommandeRepository;
 import com.sali.salicouture.repositories.MesureRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,11 +65,39 @@ public class MesureServiceImpl implements MesureService {
 
     @Override
     public void saveMesures(List<Mesure> mesures, Client client) {
-        if (!client.getExistMesureStandard()) {
-            mesures.forEach(mesure -> mesure.setClient(client));
-            client.setExistMesureStandard(true);
+        List<Mesure> mesuresPantalon = mesures.stream().filter(mesure -> mesure.getTypeVetement().equals(TypeVetement.PANTALON)).collect(Collectors.toList());
+        List<Mesure> mesuresChemise = mesures.stream().filter(mesure -> mesure.getTypeVetement().equals(TypeVetement.CHEMISE)).collect(Collectors.toList());
+        List<Mesure> mesuresVeste = mesures.stream().filter(mesure -> mesure.getTypeVetement().equals(TypeVetement.VESTE)).collect(Collectors.toList());
+        if (!client.isExistMesureStandardPantalon() && !mesuresPantalon.isEmpty()) {
+            mesuresPantalon.forEach(mesure -> mesure.setClient(client));
+            Commande commande = mesuresPantalon.get(0).getCommande();
+            commande.setUseMesureStandardPantalon(true);
+            commandeRepository.save(commande);
+            mesureRepository.saveAll(mesuresPantalon);
+            client.setExistMesureStandardPantalon(true);
+            clientRepository.save(client);
+
+        }
+
+        if (!client.isExistMesureStandardVeste() && !mesuresVeste.isEmpty()) {
+            mesuresVeste.forEach(mesure -> mesure.setClient(client));
+            Commande commande = mesuresVeste.get(0).getCommande();
+            commande.setUseMesureStandardVeste(true);
+            commandeRepository.save(commande);
+            mesureRepository.saveAll(mesuresVeste);
+            client.setExistMesureStandardVeste(true);
             clientRepository.save(client);
         }
-        mesureRepository.saveAll(mesures);
+
+        if (!client.isExistMesureStandardChemise() && !mesuresChemise.isEmpty()) {
+            mesuresChemise.forEach(mesure -> mesure.setClient(client));
+            Commande commande = mesuresChemise.get(0).getCommande();
+            commande.setUseMesureStandardChemise(true);
+            commandeRepository.save(commande);
+            mesureRepository.saveAll(mesuresChemise);
+            client.setExistMesureStandardChemise(true);
+            clientRepository.save(client);
+        }
+
     }
 }

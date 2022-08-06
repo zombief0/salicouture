@@ -10,7 +10,6 @@ import com.sali.salicouture.entities.enums.TypeVetement;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -30,9 +29,9 @@ public class ExcelServiceImpl implements ExcelService {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
-    public void lireFichierExcel(MultipartFile file) throws IOException {
-        Path repTemp = Files.createTempDirectory("salicouture_");// créer un repertoire temporaire  préfixé par scoma
-        File fichTemp = repTemp.resolve(Objects.requireNonNull(file.getOriginalFilename())).toFile();//on recopie le nom du fichier source dans le repertoir temporaire
+    public void lireFichierExcel(MultipartFile file, boolean ancienneCommande) throws IOException {
+        Path repTemp = Files.createTempDirectory("salicouture_");
+        File fichTemp = repTemp.resolve(Objects.requireNonNull(file.getOriginalFilename())).toFile();
 
         file.transferTo(fichTemp);
         Workbook workbook = WorkbookFactory.create(fichTemp);
@@ -110,7 +109,7 @@ public class ExcelServiceImpl implements ExcelService {
                         client.setAnniversaire(anniversaire.trim());
                         client.setEmail(email.trim());
                         client.setTelephone(telephone.trim());
-                        client.setExistMesureStandard(false);
+                        client.setExistMesureStandardPantalon(false);
                         sexe = sexe.trim();
                         if (!sexe.equals("")) {
                             if (sexe.toUpperCase(Locale.ROOT).equals("M")) {
@@ -165,6 +164,8 @@ public class ExcelServiceImpl implements ExcelService {
                     }
 
                     commande.setNotes(notesDescription.trim());
+                    commande.setLivrer(ancienneCommande);
+
                     commande = commandeService.saveCommandeExcel(commande, client);
 
 

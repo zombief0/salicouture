@@ -47,7 +47,6 @@ public class ClientServiceImpl implements ClientService {
         if (clientBD != null) {
             return clientBD;
         }
-        client.setExistMesureStandard(false);
         clientRepository.save(client);
         return client;
     }

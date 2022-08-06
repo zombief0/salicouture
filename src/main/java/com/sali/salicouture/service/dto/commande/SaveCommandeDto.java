@@ -16,7 +16,9 @@ public class SaveCommandeDto {
     private Long avance;
     private Long reste;
     private String notes;
-    private boolean useMesureStandard;
+    private boolean useMesureStandardPantalon;
+    private boolean useMesureStandardVeste;
+    private boolean useMesureStandardChemise;
     @NotNull
     private Echeance echeance;
 }
