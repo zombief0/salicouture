@@ -100,4 +100,10 @@ public class MesureServiceImpl implements MesureService {
         }
 
     }
+
+    @Override
+    public List<Mesure> listerMesuresStandards(Long idClient) {
+        List<Mesure> mesureList = mesureRepository.findAllByClient_Id(idClient);
+        return mesureList;
+    }
 }

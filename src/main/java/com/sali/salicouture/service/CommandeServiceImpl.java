@@ -190,6 +190,14 @@ public class CommandeServiceImpl implements CommandeService {
         return commandeRepository.findById(idCommande).orElse(null);
     }
 
+    @Override
+    public void livrerNonLivrer(Long idCommande) {
+        commandeRepository.findById(idCommande).ifPresent(commande -> {
+            commande.setLivrer(!commande.isLivrer());
+            commandeRepository.save(commande);
+        });
+    }
+
     private void enregistrerNouvellesMesures(List<Mesure> mesureList, Commande commande){
         mesureList.forEach(mesure -> {
             Mesure newMesure = mesure.copy();

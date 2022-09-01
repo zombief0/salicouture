@@ -12,4 +12,6 @@ public interface MesureService {
     Message update(SaveMesureDto saveMesure, Long idMesure);
     Message delete(Long idMesure);
     void saveMesures(List<Mesure> mesures, Client client);
+
+    List<Mesure> listerMesuresStandards(Long idClient);
 }

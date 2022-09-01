@@ -1,5 +1,6 @@
 package com.sali.salicouture.restcontroller;
 
+import com.sali.salicouture.entities.Mesure;
 import com.sali.salicouture.service.MesureService;
 import com.sali.salicouture.service.dto.MessageResponse;
 import com.sali.salicouture.service.dto.enums.Message;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/mesure/{id}")
@@ -37,5 +39,10 @@ public class MesureRestController {
 
         Message message = mesureService.delete(idMesure);
         return controllerTools.getResponse(message, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public List<Mesure> listerMesureDuClient(@PathVariable(name = "id") Long idClient) {
+        return mesureService.listerMesuresStandards(idClient);
     }
 }

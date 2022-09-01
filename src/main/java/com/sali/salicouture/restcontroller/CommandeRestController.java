@@ -47,4 +47,9 @@ public class CommandeRestController {
         Message createMessage = commandeService.update(saveCommande, idCommande);
         return controllerTools.getResponse(createMessage, HttpStatus.OK);
     }
+
+    @PatchMapping("/livrer-non-livrer/{idCommande}")
+    public void livrerNonLivrer(@PathVariable Long idCommande){
+        commandeService.livrerNonLivrer(idCommande);
+    }
 }

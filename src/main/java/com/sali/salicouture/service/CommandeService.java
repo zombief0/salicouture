@@ -16,4 +16,6 @@ public interface CommandeService {
     Commande saveCommandeExcel(Commande commande, Client client);
 
     Commande getById(Long idCommande);
+
+    void livrerNonLivrer(Long idCommande);
 }
