@@ -4,7 +4,7 @@ import com.sali.salicouture.entities.enums.Echeance;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
