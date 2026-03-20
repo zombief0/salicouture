@@ -1,14 +1,12 @@
 package com.norman.couture.restcontroller;
 
-import com.norman.couture.entities.Commande;
 import com.norman.couture.service.CommandeService;
-import com.norman.couture.service.dto.MessageResponse;
 import com.norman.couture.service.dto.commande.CommandesClientDto;
+import com.norman.couture.service.dto.commande.CommandeResponseDto;
 import com.norman.couture.service.dto.commande.SaveCommandeDto;
-import com.norman.couture.service.dto.enums.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -17,39 +15,46 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/commande")
 @RequiredArgsConstructor
+@Slf4j
 public class CommandeRestController {
     private final CommandeService commandeService;
-    private final ControllerTools controllerTools;
 
     @GetMapping("/{id}")
-    public Commande getById(@PathVariable Long id) {
+    public CommandeResponseDto getById(@PathVariable Long id) {
+        log.debug("API GET /api/commande/{} appelée", id);
         return commandeService.getById(id);
     }
+
     @GetMapping
-    public List<Commande> lister() {
+    public List<CommandeResponseDto> lister() {
+        log.debug("API GET /api/commande appelée");
         return commandeService.listerAll();
     }
 
     @GetMapping("/by-client/{idClient}")
     public CommandesClientDto listerByClient(@PathVariable Long idClient) {
+        log.debug("API GET /api/commande/by-client/{} appelée", idClient);
         return commandeService.listerByClient(idClient);
     }
 
     @PostMapping("/{idClient}")
-    public ResponseEntity<MessageResponse> saveCommande(@RequestBody @Valid SaveCommandeDto saveCommandeDto, @PathVariable Long idClient) {
-        Message createMessage = commandeService.createCommande(saveCommandeDto, idClient);
-        return controllerTools.getResponse(createMessage, HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void saveCommande(@RequestBody @Valid SaveCommandeDto saveCommandeDto, @PathVariable Long idClient) {
+        log.info("API POST /api/commande/{} appelée", idClient);
+        commandeService.createCommande(saveCommandeDto, idClient);
     }
 
     @PutMapping("/{idCommande}")
-    public ResponseEntity<MessageResponse> updateCommande(@RequestBody @Valid SaveCommandeDto saveCommande,
-                                                          @PathVariable Long idCommande) {
-        Message createMessage = commandeService.update(saveCommande, idCommande);
-        return controllerTools.getResponse(createMessage, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateCommande(@RequestBody @Valid SaveCommandeDto saveCommande, @PathVariable Long idCommande) {
+        log.info("API PUT /api/commande/{} appelée", idCommande);
+        commandeService.update(saveCommande, idCommande);
     }
 
     @PatchMapping("/livrer-non-livrer/{idCommande}")
-    public void livrerNonLivrer(@PathVariable Long idCommande){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void livrerNonLivrer(@PathVariable Long idCommande) {
+        log.info("API PATCH /api/commande/livrer-non-livrer/{} appelée", idCommande);
         commandeService.livrerNonLivrer(idCommande);
     }
 }

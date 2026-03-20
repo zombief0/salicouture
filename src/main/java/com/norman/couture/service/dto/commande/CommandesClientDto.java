@@ -1,7 +1,6 @@
 package com.norman.couture.service.dto.commande;
 
-import com.norman.couture.entities.Client;
-import com.norman.couture.entities.Commande;
+import com.norman.couture.service.dto.client.ClientResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 public class CommandesClientDto {
-    private List<Commande> commandes = new ArrayList<>();
-    private Client client;
+    private List<CommandeResponseDto> commandes = new ArrayList<>();
+    private ClientResponseDto client;
 }

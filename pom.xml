@@ -16,7 +16,7 @@
     <properties>
         <java.version>25</java.version>
         <springfox.version>3.0.2</springfox.version>
-        <apache.poi.version>5.2.2</apache.poi.version>
+        <apache.poi.version>5.5.1</apache.poi.version>
         <java-jwt.version>4.5.0</java-jwt.version>
         <springdoc-openapi.version>3.0.2</springdoc-openapi.version>
     </properties>
@@ -80,6 +80,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

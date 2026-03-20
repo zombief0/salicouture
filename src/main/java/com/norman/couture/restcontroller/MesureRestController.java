@@ -1,13 +1,11 @@
 package com.norman.couture.restcontroller;
 
-import com.norman.couture.entities.Mesure;
 import com.norman.couture.service.MesureService;
-import com.norman.couture.service.dto.MessageResponse;
-import com.norman.couture.service.dto.enums.Message;
+import com.norman.couture.service.dto.mesure.MesureResponseDto;
 import com.norman.couture.service.dto.mesure.SaveMesureDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -16,33 +14,36 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/mesure/{id}")
 @RequiredArgsConstructor
+@Slf4j
 public class MesureRestController {
     private final MesureService mesureService;
-    private final ControllerTools controllerTools;
 
     @PostMapping
-    public ResponseEntity<MessageResponse> saveMesure(@PathVariable(name = "id") Long idCommande,
-                                                       @RequestBody @Valid SaveMesureDto saveMesureDto) {
-        Message createMessage = mesureService.ajouter(saveMesureDto, idCommande);
-        return controllerTools.getResponse(createMessage, HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void saveMesure(@PathVariable(name = "id") Long idCommande,
+                           @RequestBody @Valid SaveMesureDto saveMesureDto) {
+        log.info("API POST /api/mesure/{} appelée", idCommande);
+        mesureService.ajouter(saveMesureDto, idCommande);
     }
 
     @PutMapping
-    public ResponseEntity<MessageResponse> updateMesure(@PathVariable(name = "id") Long idMesure,
-                                                        @RequestBody @Valid SaveMesureDto saveMesure) {
-        Message message = mesureService.update(saveMesure, idMesure);
-        return controllerTools.getResponse(message, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMesure(@PathVariable(name = "id") Long idMesure,
+                             @RequestBody @Valid SaveMesureDto saveMesure) {
+        log.info("API PUT /api/mesure/{} appelée", idMesure);
+        mesureService.update(saveMesure, idMesure);
     }
 
     @DeleteMapping
-    public ResponseEntity<MessageResponse> deleteMesure(@PathVariable(name = "id") Long idMesure) {
-
-        Message message = mesureService.delete(idMesure);
-        return controllerTools.getResponse(message, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMesure(@PathVariable(name = "id") Long idMesure) {
+        log.info("API DELETE /api/mesure/{} appelée", idMesure);
+        mesureService.delete(idMesure);
     }
 
     @GetMapping
-    public List<Mesure> listerMesureDuClient(@PathVariable(name = "id") Long idClient) {
+    public List<MesureResponseDto> listerMesureDuClient(@PathVariable(name = "id") Long idClient) {
+        log.debug("API GET /api/mesure/{} appelée", idClient);
         return mesureService.listerMesuresStandards(idClient);
     }
 }

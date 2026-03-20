@@ -26,9 +26,10 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final DetailsUtilisateurService utilisateurService;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
         return config.getAuthenticationManager();
     }
 
@@ -52,7 +53,7 @@ public class SecurityConfiguration {
                             .anyRequest().authenticated();
                 })
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class).build();
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
     @Bean
